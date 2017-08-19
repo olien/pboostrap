@@ -5,81 +5,36 @@ class Button extends Control
 {
     public function __construct($title, $params = array())
     {
-        $style = 'light';
-        $type = 'button';
-        $css = '';
-        $class = '';
-        $size = '';
-        $id = '';
-        $dataDismiss = '';
-        
-        $tag = 'button';
-        
-        $dataToggle = '';
-        $href = '';
-        if(isset($params['collapse']))
-        {
-            $dataToggle = ' data-toggle="collapse"';
-            $href = ' href="#' . $params['collapse'] . '"';
-        }
-        
-        if(isset($params['data-toggle']))
-        {
-            $dataToggle = ' data-toggle="' . $params['data-toggle'] . '"';
-        }
-        
-        if(isset($params['id']))
-        {
-            $id = ' id="' . $params['id'] . '"';
-        }
         if(isset($params['href']))
         {
-            $href = ' href="' . $params['href'] . '"';
-            $tag = 'a';
+            $this->addAttribute('href', $params['href']);
+            $this->_tag = 'a';
         }
-        
-        if(isset($params['data-dismiss']))
+        else
         {
-            $dataDismiss = ' data-dismiss="' . $params['data-dismiss'] . '"';
+            $this->_tag = 'button';
         }
         
-        if(isset($params['size']))
-        {
-            $size = ' btn-' . $params['size'];
-        }
+        $this->addAttribute('class', 'btn');
+        $this->addAttributeIfExists($params, 'collapse', 
+                [['data-toggle', 'collapse'],
+                    ['href', '#%s']]);
         
-        if(isset($params['style']))
-        {
-            $style = $params['style'];
-        }
+        $this->addAttributeIfExists($params, 'data-toggle', ['data-toggle', '%s']);
+        $this->addAttributeIfExists($params, 'data-dismiss', ['data-dismiss', '%s']);
+        $this->addAttributeIfExists($params, 'id', ['id', '%s']);
+        $this->addAttributeIfExists($params, 'size', ['class', 'btn-%s']);
+        $this->addAttributeIfExists($params, 'style', ['class', 'btn-%s']);
+        $this->addAttributeIfExists($params, 'type', ['type', '%s']);
+        $this->addAttributeIfExists($params, 'onclick', ['onclick', '%s']);
+        $this->addAttributeIfExists($params, 'css', ['style', '%s']);
+        $this->addAttributeIfExists($params, 'class', ['class', '%s']);
         
-        if(isset($params['type']))
-        {
-            $type = $params['type'];
-        }
-        
-        $onClick = '';
-        if(isset($params['onclick']))
-        {
-            $onClick = 'onclick="' . $params['onclick'] . '"';
-        }
-        
-        $icon = '';
         if(isset($params['icon']))
         {
-            $icon = '<i class="fa fa-' . $params['icon'] . ' fa-lg"></i>';
+            $this->_childs[] = new Icon($params['icon'], ['size' => 'lg']);
         }
         
-        if(isset($params['css']))
-        {
-            $css = 'style="' . $params['css'] . '"';
-        }
-        
-        if(isset($params['class']))
-        {
-            $class = $params['class'];
-        }
-        
-        $this->_html = '<' . $tag . ' type="' . $type . '"' . $dataToggle . $href . ' class="btn btn-' . $style . ' ' . $size . ' ' . $class . '" ' . $onClick . ' ' . $css . $dataDismiss . $id . '>' . $icon . ' ' . $title . '</' . $tag . '>';
+        $this->_childs[] = $title;
     }
 }
